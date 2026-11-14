@@ -13,11 +13,11 @@ Não são bugs, e sim recursos fora do escopo atual. Ao implementar um deles, re
 
 | Bug da versão original | Correção |
 |---|---|
-| CPI sempre 1.0 (cabeçalho do CSV abortava a leitura) | `TabelaCiclos` pula o cabeçalho e valida cada linha |
-| `lw $1, 100 ($2)` gerava `00000000` | `AnalisadorSintatico` normaliza o espaço antes de `(` |
-| `multu` gerava `00000000`; `divu` não existia | adicionadas ao enum `Instrucao` |
-| Só `$zero`, `$at`, `$v0`, `$s0–$s7` eram reconhecidos | enum `Registrador` com os 32 |
-| Erros viravam `nop` em silêncio | `ErroMontagem` com número da linha; nenhum arquivo é gerado |
-| Imediato hex (`0x10`) abortava com stack trace | `Operandos` aceita decimal e hexadecimal e valida a faixa |
+| CPI sempre 1.0 (cabeçalho do CSV abortava a leitura) | `CycleTable` pula o cabeçalho e valida cada linha |
+| `lw $1, 100 ($2)` gerava `00000000` | `Parser` normaliza o espaço antes de `(` |
+| `multu` gerava `00000000`; `divu` não existia | adicionadas ao enum `Instruction` |
+| Só `$zero`, `$at`, `$v0`, `$s0–$s7` eram reconhecidos | enum `Register` com os 32 |
+| Erros viravam `nop` em silêncio | `AssemblyError` com número da linha; nenhum arquivo é gerado |
+| Imediato hex (`0x10`) abortava com stack trace | `Operands` aceita decimal e hexadecimal e valida a faixa |
 | CPI contava instruções inválidas | só instruções montadas entram no relatório |
-| `replace(".asm", "")` alterava o caminho inteiro | `FormatoSaida.destinoPara` troca só a extensão |
+| `replace(".asm", "")` alterava o caminho inteiro | `OutputFormat.outputPathFor` troca só a extensão |

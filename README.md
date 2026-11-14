@@ -91,20 +91,20 @@ Opcodes e formatos estão em [`docs/referencia-mips.md`](docs/referencia-mips.md
 ```
 src/mips/
 ├── Main.java                 CLI e localização do ciclos.csv
-├── Montador.java             duas passadas: labels → codificação
-├── AnalisadorSintatico.java  texto → LinhaFonte (labels, mnemônico, operandos)
-├── Instrucao.java            enum: mnemônico → sintaxe + opcode + funct
-├── Sintaxe.java              enum: ordem dos operandos e montagem dos bits R/I/J
-├── Operandos.java            leitura validada de registradores, imediatos, memória e labels
-├── Registrador.java          enum dos 32 registradores
-├── TabelaSimbolos.java       label → endereço
-├── TabelaCiclos.java         leitura do ciclos.csv
-├── Relatorio.java            contagem e CPI médio
-├── FormatoSaida.java         escrita .bin / .hex
-└── ErroMontagem.java, FalhaMontagem.java, LinhaFonte.java, ProgramaMontado.java, InstrucaoMontada.java
+├── Assembler.java            duas passadas: labels → codificação
+├── Parser.java               texto → SourceLine (labels, mnemônico, operandos)
+├── Instruction.java          enum: mnemônico → sintaxe + opcode + funct
+├── Syntax.java               enum: ordem dos operandos e montagem dos bits R/I/J
+├── Operands.java             leitura validada de registradores, imediatos, memória e labels
+├── Register.java             enum dos 32 registradores
+├── SymbolTable.java          label → endereço
+├── CycleTable.java           leitura do ciclos.csv
+├── Report.java               contagem e CPI médio
+├── OutputFormat.java         escrita .bin / .hex
+└── AssemblyError.java, AssemblyException.java, SourceLine.java, AssembledProgram.java, AssembledInstruction.java
 ```
 
-Adicionar uma instrução que usa uma sintaxe existente exige **uma linha** no enum `Instrucao`.
+Adicionar uma instrução que usa uma sintaxe existente exige **uma linha** no enum `Instruction`.
 
 ## Testes
 
@@ -112,4 +112,4 @@ Adicionar uma instrução que usa uma sintaxe existente exige **uma linha** no e
 ./testar.sh
 ```
 
-O script compila com `-Xlint:all -Werror`, executa os testes unitários (`test/mips/TestesMontador.java`) e compara a saída de `teste.asm` com o gabarito `testes/teste.esperado.hex`.
+O script compila com `-Xlint:all -Werror`, executa os testes unitários (`test/mips/AssemblerTests.java`) e compara a saída de `teste.asm` com o gabarito `testes/teste.esperado.hex`.

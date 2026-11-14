@@ -10,53 +10,53 @@ import java.util.Optional;
 
 /** Linha de comando: {@code java -cp out mips.Main <arquivo.asm> <-b|-h>}. */
 public final class Main {
-    static final int SUCESSO = 0;
-    static final int USO_INCORRETO = 1;
-    static final int FALHA = 2;
+    static final int SUCCESS = 0;
+    static final int USAGE_ERROR = 1;
+    static final int FAILURE = 2;
 
-    private static final String ARQUIVO_CICLOS = "ciclos.csv";
+    private static final String CYCLES_FILE = "ciclos.csv";
 
     private Main() {
     }
 
     public static void main(String[] args) {
-        System.exit(executar(args, System.out, System.err));
+        System.exit(run(args, System.out, System.err));
     }
 
-    static int executar(String[] args, PrintStream saida, PrintStream erro) {
-        Optional<FormatoSaida> formato = args.length == 2 ? FormatoSaida.porOpcao(args[1]) : Optional.empty();
-        if (formato.isEmpty()) {
-            erro.println("Uso: java -cp out mips.Main <arquivo.asm> <-b | -h>");
-            erro.println("  -b  binário (.bin)    -h  hexadecimal Logisim (.hex)");
-            return USO_INCORRETO;
+    static int run(String[] args, PrintStream out, PrintStream err) {
+        Optional<OutputFormat> format = args.length == 2 ? OutputFormat.fromOption(args[1]) : Optional.empty();
+        if (format.isEmpty()) {
+            err.println("Uso: java -cp out mips.Main <arquivo.asm> <-b | -h>");
+            err.println("  -b  binário (.bin)    -h  hexadecimal Logisim (.hex)");
+            return USAGE_ERROR;
         }
-        Path fonte = Path.of(args[0]);
+        Path source = Path.of(args[0]);
         try {
-            ProgramaMontado programa = new Montador().montar(Files.readAllLines(fonte, StandardCharsets.UTF_8));
-            Path destino = formato.get().destinoPara(fonte);
-            formato.get().escrever(programa.codigos(), destino);
-            saida.println("Sucesso! Arquivo gerado: " + destino);
-            saida.println();
-            saida.println(Relatorio.de(programa, carregarCiclos(fonte, erro)).formatar());
-            return SUCESSO;
-        } catch (FalhaMontagem falha) {
-            falha.erros().forEach(e -> erro.println(fonte + ":" + e.linha() + ": " + e.getMessage()));
-            erro.println(falha.getMessage() + "; nenhum arquivo foi gerado.");
+            AssembledProgram program = new Assembler().assemble(Files.readAllLines(source, StandardCharsets.UTF_8));
+            Path target = format.get().outputPathFor(source);
+            format.get().write(program.codes(), target);
+            out.println("Sucesso! Arquivo gerado: " + target);
+            out.println();
+            out.println(Report.of(program, loadCycles(source, err)).format());
+            return SUCCESS;
+        } catch (AssemblyException failure) {
+            failure.errors().forEach(e -> err.println(source + ":" + e.line() + ": " + e.getMessage()));
+            err.println(failure.getMessage() + "; nenhum arquivo foi gerado.");
         } catch (IOException e) {
-            erro.println("Erro de arquivo: " + e.getMessage());
+            err.println("Erro de arquivo: " + e.getMessage());
         }
-        return FALHA;
+        return FAILURE;
     }
 
     /** Procura o CSV no diretório atual e depois ao lado do .asm; sem ele, cada instrução vale 1 ciclo. */
-    private static TabelaCiclos carregarCiclos(Path fonte, PrintStream erro) throws IOException {
-        Path diretorioFonte = fonte.toAbsolutePath().getParent();
-        for (Path candidato : List.of(Path.of(ARQUIVO_CICLOS), diretorioFonte.resolve(ARQUIVO_CICLOS))) {
-            if (Files.isRegularFile(candidato)) {
-                return TabelaCiclos.carregar(candidato);
+    private static CycleTable loadCycles(Path source, PrintStream err) throws IOException {
+        Path sourceDir = source.toAbsolutePath().getParent();
+        for (Path candidate : List.of(Path.of(CYCLES_FILE), sourceDir.resolve(CYCLES_FILE))) {
+            if (Files.isRegularFile(candidate)) {
+                return CycleTable.load(candidate);
             }
         }
-        erro.println("Aviso: " + ARQUIVO_CICLOS + " não encontrado; usando 1 ciclo por instrução.");
-        return TabelaCiclos.padrao();
+        err.println("Aviso: " + CYCLES_FILE + " não encontrado; usando 1 ciclo por instrução.");
+        return CycleTable.defaults();
     }
 }

@@ -10,9 +10,9 @@ J: opcode(6) | endereço(26)
 
 ## Instruções suportadas
 
-A coluna **Sintaxe** é a constante de `src/mips/Sintaxe.java`. Opcode e funct estão em hexadecimal.
+A coluna **Syntax** é a constante de `src/mips/Syntax.java`. Opcode e funct estão em hexadecimal.
 
-| Instrução | Uso | Sintaxe | opcode | funct |
+| Instrução | Uso | Syntax | opcode | funct |
 |---|---|---|---|---|
 | add / addu | `add rd, rs, rt` | `RD_RS_RT` | 00 | 20 / 21 |
 | sub / subu | `sub rd, rs, rt` | `RD_RS_RT` | 00 | 22 / 23 |
@@ -24,12 +24,12 @@ A coluna **Sintaxe** é a constante de `src/mips/Sintaxe.java`. Opcode e funct e
 | div / divu | `div rs, rt` | `RS_RT` | 00 | 1A / 1B |
 | mfhi / mflo | `mfhi rd` | `RD` | 00 | 10 / 12 |
 | jr | `jr rs` | `RS` | 00 | 08 |
-| nop / syscall | `nop` | `NENHUM` | 00 | 00 / 0C |
-| addi / addiu | `addi rt, rs, imm` (−32768..32767) | `RT_RS_IMEDIATO` | 08 / 09 | — |
-| slti / sltiu | `slti rt, rs, imm` (−32768..32767) | `RT_RS_IMEDIATO` | 0A / 0B | — |
-| andi / ori / xori | `andi rt, rs, imm` (0..65535) | `RT_RS_IMEDIATO_LOGICO` | 0C / 0D / 0E | — |
-| lui | `lui rt, imm` (0..65535) | `RT_IMEDIATO` | 0F | — |
-| lw / sw | `lw rt, desl(rs)` | `RT_MEMORIA` | 23 / 2B | — |
+| nop / syscall | `nop` | `NONE` | 00 | 00 / 0C |
+| addi / addiu | `addi rt, rs, imm` (−32768..32767) | `RT_RS_IMM` | 08 / 09 | — |
+| slti / sltiu | `slti rt, rs, imm` (−32768..32767) | `RT_RS_IMM` | 0A / 0B | — |
+| andi / ori / xori | `andi rt, rs, imm` (0..65535) | `RT_RS_IMM_UNSIGNED` | 0C / 0D / 0E | — |
+| lui | `lui rt, imm` (0..65535) | `RT_IMM` | 0F | — |
+| lw / sw | `lw rt, desl(rs)` | `RT_MEM` | 23 / 2B | — |
 | beq / bne | `beq rs, rt, label` | `RS_RT_LABEL` | 04 / 05 | — |
 | j / jal | `j label` | `LABEL` | 02 / 03 | — |
 

@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 rm -rf out
 javac -Xlint:all -Werror -d out $(find src test -name '*.java')
-java -cp out mips.TestesMontador
+java -cp out mips.AssemblerTests
 
 cp teste.asm out/teste.asm
 saida=$(java -cp out mips.Main out/teste.asm -h)
